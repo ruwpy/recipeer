@@ -1,3 +1,40 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+* {
+  box-sizing: border-box;
+  padding: 0;
+  margin: 0;
+}
+
+html,
+body {
+  max-width: 100vw;
+  overflow-x: hidden;
+  color: #1c1c1c;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+input,
+textarea {
+  border: 1px solid #e5e7eb;
+  outline: 2.5px solid transparent;
+  border-radius: 0.5rem;
+  padding: 0.25rem 0.7rem;
+}
+
+input:focus,
+textarea:focus {
+  outline-color: rgba(119, 189, 255, 0.5);
+  border-color: #9ca3af;
+}
+
+[contenteditable] {
+  outline: none;
+  -webkit-tap-highlight-color: transparent;
+}

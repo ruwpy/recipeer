@@ -1,7 +1,6 @@
 "use client";
 
 import { Dispatch, SetStateAction, useEffect, useState } from "react";
-import Button from "../../common/Button";
 import { AnimatePresence, Variants, motion as m } from "framer-motion";
 import { createPortal } from "react-dom";
 
@@ -22,46 +21,39 @@ const contentVariants: Variants = {
   open: { scale: 1, opacity: 1, transition: { duration: 0.15 } },
 };
 
-const Modal = ({
-  className,
-  children,
-  isModalOpen,
-  setIsModalOpen,
-}: ModalProps) => {
+const Modal = ({ className, children, isModalOpen, setIsModalOpen }: ModalProps) => {
   const [isBrowser, setIsBrowser] = useState(false);
 
   useEffect(() => {
     setIsBrowser(true);
   }, []);
 
-  return isBrowser ? (
-    createPortal(
-      <AnimatePresence mode="wait">
-        {isModalOpen && (
-          <m.div
-            key="modal"
-            animate={isModalOpen ? "open" : "closed"}
-            variants={bgVariants}
-            initial="closed"
-            exit="closed"
-            onClick={() => setIsModalOpen(false)}
-            className="fixed flex justify-center items-center inset-0 bg-black bg-opacity-50 z-50"
-          >
+  return isBrowser
+    ? createPortal(
+        <AnimatePresence mode="wait">
+          {isModalOpen && (
             <m.div
-              variants={contentVariants}
-              onClick={(e) => e.stopPropagation()}
-              className={`bg-white rounded-lg ${className}`}
+              key="modal"
+              animate={isModalOpen ? "open" : "closed"}
+              variants={bgVariants}
+              initial="closed"
+              exit="closed"
+              onClick={() => setIsModalOpen(false)}
+              className="fixed flex justify-center items-center inset-0 bg-black bg-opacity-50 z-50"
             >
-              {children}
+              <m.div
+                variants={contentVariants}
+                onClick={(e) => e.stopPropagation()}
+                className={`bg-white rounded-lg ${className}`}
+              >
+                {children}
+              </m.div>
             </m.div>
-          </m.div>
-        )}
-      </AnimatePresence>,
-      document.getElementById("modal") as Element
-    )
-  ) : (
-    <div>not a browser</div>
-  );
+          )}
+        </AnimatePresence>,
+        document.getElementById("modal") as Element
+      )
+    : null;
 };
 
 export default Modal;

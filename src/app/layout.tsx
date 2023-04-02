@@ -3,6 +3,7 @@ import { Roboto } from "next/font/google";
 import Navbar from "./components/Navbar";
 import Main from "./components/layout/Main";
 import QueryWrapper from "./components/QueryWrapper";
+import AuthWrapper from "./components/auth/AuthWrapper";
 
 export const metadata = {
   title: "Recipeer",
@@ -14,19 +15,18 @@ const roboto = Roboto({
   preload: false,
 });
 
-export default function RootLayout({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
+export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en" className={roboto.className}>
       <body>
         <QueryWrapper>
           {/* @ts-expect-error Server Component */}
-          <Navbar />
-          <Main>{children}</Main>
-          <div id="modal"></div>
+          <AuthWrapper>
+            {/* @ts-expect-error Server Component */}
+            <Navbar />
+            <Main>{children}</Main>
+            <div id="modal"></div>
+          </AuthWrapper>
         </QueryWrapper>
       </body>
     </html>

@@ -11,13 +11,13 @@ export interface Recipe {
 
 export interface Ingredient {
   id: string;
-  name: string;
-  quantity: string;
+  value: string;
 }
 
 export interface Direction {
   id: string;
-  direction: string;
+  value: string;
+  order: number;
 }
 
 export interface Category {

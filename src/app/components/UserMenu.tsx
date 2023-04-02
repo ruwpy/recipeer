@@ -4,13 +4,8 @@ import { motion as m, Variants, AnimatePresence } from "framer-motion";
 import { Session } from "next-auth";
 import Image from "next/image";
 import Link from "next/link";
-import { ReactNode, useState } from "react";
-import {
-  PlusIcon,
-  TagIcon,
-  ShoppingBagIcon,
-  QueueListIcon,
-} from "@heroicons/react/24/outline";
+import { ReactNode, useEffect, useState } from "react";
+import { PlusIcon, TagIcon, ShoppingCartIcon, QueueListIcon } from "@heroicons/react/24/outline";
 
 const userMenuVariants: Variants = {
   closed: {
@@ -25,15 +20,7 @@ const userMenuVariants: Variants = {
   },
 };
 
-const MenuLink = ({
-  children,
-  to,
-  icon,
-}: {
-  children: string;
-  to: string;
-  icon: ReactNode;
-}) => {
+const MenuLink = ({ children, to, icon }: { children: string; to: string; icon: ReactNode }) => {
   return (
     <Link
       className="pl-2 pr-4 py-1 whitespace-nowrap hover:bg-gray-100 rounded-md flex gap-2"
@@ -75,28 +62,19 @@ const UserMenu = ({ session }: { session: Session }) => {
             className="absolute bg-white top-14 left-0 shadow-lg border border-gray-200 w-fit rounded-lg p-3"
           >
             <div className="flex flex-col gap-2">
-              <MenuLink
-                icon={<QueueListIcon className="w-6 h-6 opacity-40" />}
-                to="/myrecipes"
-              >
+              <MenuLink icon={<QueueListIcon className="w-6 h-6 opacity-40" />} to="/myrecipes">
                 My recipes
               </MenuLink>
-              <MenuLink
-                icon={<PlusIcon className="w-6 h-6 opacity-40" />}
-                to="/createrecipe"
-              >
+              <MenuLink icon={<PlusIcon className="w-6 h-6 opacity-40" />} to="/createrecipe">
                 Create new recipe
               </MenuLink>
               <MenuLink
-                icon={<ShoppingBagIcon className="w-6 h-6 opacity-40" />}
+                icon={<ShoppingCartIcon className="w-6 h-6 opacity-40" />}
                 to="/shoppinglist"
               >
                 Shopping list
               </MenuLink>
-              <MenuLink
-                icon={<TagIcon className="w-6 h-6 opacity-40" />}
-                to="/shoppinglist"
-              >
+              <MenuLink icon={<TagIcon className="w-6 h-6 opacity-40" />} to="/shoppinglist">
                 Recipe categories
               </MenuLink>
             </div>

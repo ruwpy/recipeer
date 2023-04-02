@@ -1,5 +1,3 @@
-import { ReactNode } from "react";
-
 interface InputProps extends React.HTMLAttributes<HTMLInputElement> {
   inputValue: string;
   setInputValue: React.Dispatch<React.SetStateAction<string>>;

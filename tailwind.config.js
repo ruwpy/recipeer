@@ -4,7 +4,11 @@ module.exports = {
     "./src/**/*.{ts,tsx}",
   ],
   theme: {
-    extend: {},
+    extend: {
+      spacing: {
+        'dscreen': '100dvh'
+      }
+    },
   },
   plugins: [],
 }

@@ -15,10 +15,10 @@ model Recipe {
   ingredients   Json[]
   directions    Json[]
   cookingTime   Int
-  author        User     @relation(fields: [authorId], references: [id])
+  author        User        @relation(fields: [authorId], references: [id])
   authorId      String
-  category      Category @relation(fields: [categories], references: [id])
-  categories    String[]
+  category      Category    @relation(fields: [categoryId], references: [id])
+  categoryId    String
 }
 
 model Account {
@@ -62,9 +62,10 @@ model User {
 
 model Category {
   id            String   @id @default(cuid())
+  name          String
+  recipes       Recipe[]
   user          User     @relation(fields: [userId], references: [id])
   userId        String
-  recipes       Recipe[]
 }
 
 model VerificationToken {

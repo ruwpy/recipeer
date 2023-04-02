@@ -9,8 +9,8 @@ import axios from "axios";
 import useCategoryStore from "@/stores/useCategoryStore";
 
 interface CategoriesModalProps extends ModalProps {
-  selectedCategory: Category | undefined;
-  setSelectedCategory: Dispatch<SetStateAction<Category | undefined>>;
+  selectedCategory: Category | null;
+  setSelectedCategory: Dispatch<SetStateAction<Category | null>>;
 }
 
 export default function CategoriesModal({
@@ -73,7 +73,10 @@ export default function CategoriesModal({
           ? categories.map((category) => {
               return (
                 <div
-                  onClick={() => setSelectedCategory(category)}
+                  key={category.id}
+                  onClick={() =>
+                    setSelectedCategory(selectedCategory === category ? null : category)
+                  }
                   className="w-full border border-gray-200 hover:bg-gray-100 p-2 cursor-pointer rounded-lg flex items-center gap-2"
                 >
                   <input

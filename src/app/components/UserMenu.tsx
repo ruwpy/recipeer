@@ -4,7 +4,7 @@ import { motion as m, Variants, AnimatePresence } from "framer-motion";
 import { Session } from "next-auth";
 import Image from "next/image";
 import Link from "next/link";
-import { ReactNode, useEffect, useState } from "react";
+import { ReactNode, useState } from "react";
 import { PlusIcon, TagIcon, ShoppingCartIcon, QueueListIcon } from "@heroicons/react/24/outline";
 
 const userMenuVariants: Variants = {
@@ -23,7 +23,7 @@ const userMenuVariants: Variants = {
 const MenuLink = ({ children, to, icon }: { children: string; to: string; icon: ReactNode }) => {
   return (
     <Link
-      className="pl-2 pr-4 py-1 whitespace-nowrap hover:bg-gray-100 rounded-md flex gap-2"
+      className="pl-2 pr-4 transition-colors whitespace-nowrap hover:bg-gray-100 rounded-md py-1.5 flex gap-2"
       href={to}
     >
       {icon}
@@ -39,7 +39,7 @@ const UserMenu = ({ session }: { session: Session }) => {
     <div className="relative">
       <div
         onClick={() => setIsMenuOpen((prev) => !prev)}
-        className="flex gap-2 items-center max-w-[200px] overflow-hidden whitespace-nowrap text-ellipsis cursor-pointer hover:bg-gray-100 p-2 rounded-lg"
+        className="flex gap-2 items-center max-w-[200px] transition-colors overflow-hidden whitespace-nowrap text-ellipsis cursor-pointer hover:bg-gray-100 p-2 rounded-lg"
       >
         {session?.user?.image && (
           <Image
@@ -62,7 +62,7 @@ const UserMenu = ({ session }: { session: Session }) => {
             className="absolute bg-white top-14 left-0 shadow-lg border border-gray-200 w-fit rounded-lg p-3"
           >
             <div className="flex flex-col gap-2">
-              <MenuLink icon={<QueueListIcon className="w-6 h-6 opacity-40" />} to="/myrecipes">
+              <MenuLink icon={<QueueListIcon className="w-6 h-6 opacity-40" />} to="/recipes">
                 My recipes
               </MenuLink>
               <MenuLink icon={<PlusIcon className="w-6 h-6 opacity-40" />} to="/createrecipe">

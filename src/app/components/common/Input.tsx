@@ -14,7 +14,7 @@ const Input = ({ inputValue, setInputValue, children, max, ...props }: InputProp
         className="w-full"
         name={children}
         type="text"
-        max={max || 0}
+        maxLength={max || 512}
         {...props}
       />
       <label className="absolute left-1 -top-1 text-xs opacity-80" htmlFor={children}>

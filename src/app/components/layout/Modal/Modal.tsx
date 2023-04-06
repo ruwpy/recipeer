@@ -44,7 +44,7 @@ const Modal = ({ className, children, isModalOpen, setIsModalOpen }: ModalProps)
               <m.div
                 variants={contentVariants}
                 onClick={(e) => e.stopPropagation()}
-                className={`bg-white rounded-lg ${className}`}
+                className={`bg-white rounded-lg max-h-[500px] ${className}`}
               >
                 {children}
               </m.div>

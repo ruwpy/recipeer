@@ -1,7 +1,7 @@
 "use client";
 
 import { Category, Direction, Ingredient } from "@/types";
-import { KeyboardEvent, useState } from "react";
+import { ChangeEvent, KeyboardEvent, useState } from "react";
 import { AnimatePresence, motion as m } from "framer-motion";
 import Button from "./common/Button";
 import Input from "./common/Input";
@@ -16,6 +16,7 @@ import { nanoid } from "nanoid";
 import Loading from "./Loading";
 
 const RecipeForm = () => {
+  // form states
   const [recipeName, setRecipeName] = useState("");
   const [description, setDesctiption] = useState("");
   const [preparationTime, setPreparationTime] = useState("");
@@ -27,30 +28,35 @@ const RecipeForm = () => {
   const [directions, setDirections] = useState<Direction[]>([]);
   const [selectedCategories, setSelectedCategories] = useState<Category[]>([]);
 
+  // image state
+  const [image, setImage] = useState<File>();
+
+  // misc states
   const [isCategoriesModalOpen, setIsCategoriesModalOpen] = useState(false);
   const [isSuccessModalOpen, setIsSuccessModalOpen] = useState(false);
   const [isIngredientFocus, setIsIngredientFocus] = useState(false);
   const [isDirectionsFocus, setIsDirectionsFocus] = useState(false);
   const [isCreateRecipeLoading, setIsCreateRecipeLoading] = useState(false);
 
+  // on success states
   const [recipeTitleOnSuccess, setRecipeTitleOnSuccess] = useState("");
   const [recipeIdOnSuccess, setRecipeIdOnSuccess] = useState("");
 
   const recipeData: Recipe = {
-    title: recipeName,
+    amountOfServings: Number.isNaN(amountOfServings) ? 0 : +amountOfServings,
+    categories: selectedCategories,
     cookingTime: Number.isNaN(cookingTime) ? 0 : +cookingTime,
     description: description,
-    preparationTime: Number.isNaN(preparationTime) ? 0 : +preparationTime,
-    amountOfServings: Number.isNaN(amountOfServings) ? 0 : +amountOfServings,
     directions: directions,
+    imageUrl: "",
     ingredients: ingredients,
-    categories: selectedCategories,
+    preparationTime: Number.isNaN(preparationTime) ? 0 : +preparationTime,
+    title: recipeName,
   };
 
   const createRecipeMutation = useMutation({
-    mutationFn: async (recipeData: Recipe) => {
-      setIsCreateRecipeLoading(true);
-      return await axios.post("/api/recipes", { recipeData });
+    mutationFn: async ({ recipeData, imageUrl }: { recipeData: Recipe; imageUrl: string }) => {
+      return await axios.post("/api/recipes", { recipeData, imageUrl });
     },
     onError: (error) => {
       console.log(error);
@@ -75,8 +81,24 @@ const RecipeForm = () => {
     },
   });
 
-  const createRecipe = () => {
-    createRecipeMutation.mutate(recipeData);
+  const createRecipe = async () => {
+    setIsCreateRecipeLoading(true);
+
+    const imageUploadUrl = (await axios.get("/api/s3")).data as string;
+    axios.put(imageUploadUrl, image, {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    });
+
+    const imageUrl = imageUploadUrl.split("?")[0];
+
+    createRecipeMutation.mutate({ recipeData, imageUrl });
+  };
+
+  const selectImage = (e: ChangeEvent<HTMLInputElement>) => {
+    const selectedFile = e.target.files as FileList;
+    setImage(selectedFile?.[0]);
   };
 
   const addInstOrDirection = (e: KeyboardEvent<HTMLInputElement>) => {
@@ -150,6 +172,7 @@ const RecipeForm = () => {
           >
             Categories
           </Button>
+          <input type="file" accept="image/*" onChange={(e) => selectImage(e)} />
           <Input
             inputValue={preparationTime}
             setInputValue={setPreparationTime}
@@ -208,7 +231,7 @@ const RecipeForm = () => {
               })
             ) : (
               <p className="text-gray-500">
-                You haven't add any ingredients yet. Click Enter when you're done with one
+                You haven't add any ingredients yet. Press Enter when you're done with one
               </p>
             )}
           </m.div>
@@ -253,7 +276,7 @@ const RecipeForm = () => {
                 })
               ) : (
                 <p className="text-gray-500">
-                  You haven't add any directions yet. Click Enter when you're done with one
+                  You haven't add any directions yet. Press Enter when you're done with one
                 </p>
               )}
             </Reorder.Group>

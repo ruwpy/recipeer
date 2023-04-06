@@ -13,6 +13,7 @@ model Recipe {
   updatedAt        DateTime   @updatedAt
   title            String?    @db.VarChar(64)
   description      String?    @db.VarChar(256)
+  imageUrl         String?
   ingredients      Json?
   directions       Json?
   cookingTime      Int?

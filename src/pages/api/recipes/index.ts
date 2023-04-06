@@ -5,7 +5,7 @@ import { Recipe } from "@/types";
 import { prisma } from "../../../../prisma/client";
 
 interface RecipeApiRequest extends NextApiRequest {
-  body: { recipeData: Recipe };
+  body: { recipeData: Recipe; imageUrl: string };
 }
 
 export interface RecipeApiResponse {
@@ -35,6 +35,9 @@ const handler = async (req: RecipeApiRequest, res: NextApiResponse<RecipeApiResp
           orderBy: {
             createdAt: "desc",
           },
+          include: {
+            author: true,
+          },
         });
         const allRecipes = await prisma.recipe.findMany({
           where: {
@@ -58,16 +61,19 @@ const handler = async (req: RecipeApiRequest, res: NextApiResponse<RecipeApiResp
     });
     const {
       recipeData: {
-        cookingTime,
-        categories,
-        description,
-        preparationTime,
         amountOfServings,
+        categories,
+        cookingTime,
+        description,
         directions,
         ingredients,
+        preparationTime,
         title,
       },
+      imageUrl,
     } = req.body;
+
+    console.log(imageUrl);
 
     const categoriesIdArray = categories
       ? categories.map((category) => {
@@ -81,13 +87,14 @@ const handler = async (req: RecipeApiRequest, res: NextApiResponse<RecipeApiResp
       if (prismaUser) {
         const result = await prisma.recipe.create({
           data: {
-            cookingTime,
-            preparationTime,
-            description,
             amountOfServings,
-            title,
+            cookingTime,
+            description,
             directions,
+            imageUrl,
             ingredients,
+            preparationTime,
+            title,
             author: {
               connect: {
                 id: prismaUser.id,
@@ -102,6 +109,8 @@ const handler = async (req: RecipeApiRequest, res: NextApiResponse<RecipeApiResp
         res.status(200).json(result);
       }
     } catch (error) {
+      console.log(error);
+
       res.status(403).json({ error: "Error has occured whilst making a request" });
     }
   }

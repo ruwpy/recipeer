@@ -1,18 +1,20 @@
-import { Prisma } from "@prisma/client";
+import { Prisma, User } from "@prisma/client";
 
 export interface Recipe {
-  id?: string;
-  createdAt?: Date;
-  updatedAt?: Date;
-  title: string;
-  description?: string;
-  categories?: Category[];
-  ingredients: Ingredient[];
-  directions: Direction[];
-  preparationTime: number;
   amountOfServings: number;
-  cookingTime: number;
+  author?: User;
   authorId?: string;
+  categories?: Category[];
+  cookingTime: number;
+  createdAt?: Date;
+  description?: string;
+  directions: Direction[];
+  id?: string;
+  imageUrl?: string;
+  ingredients: Ingredient[];
+  preparationTime: number;
+  title: string;
+  updatedAt?: Date;
 }
 
 export interface Ingredient extends Prisma.InputJsonObject {

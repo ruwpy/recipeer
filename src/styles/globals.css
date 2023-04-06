@@ -15,6 +15,10 @@ body {
   color: #1c1c1c;
 }
 
+*::-webkit-scrollbar {
+  display: none;
+}
+
 a {
   color: inherit;
   text-decoration: none;
@@ -28,10 +32,15 @@ textarea {
   padding: 0.25rem 0.7rem;
 }
 
-input:focus,
-textarea:focus {
+input:focus {
   outline-color: rgba(119, 189, 255, 0.5);
-  border-color: #9ca3af;
+  border-color: transparent;
+  transition: outline-color 200ms, border-color 200ms;
+}
+
+input[type="checkbox"] {
+  background: black;
+  border-radius: 50px;
 }
 
 [contenteditable] {

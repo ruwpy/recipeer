@@ -1,7 +1,7 @@
 "use client";
 
 import { Category, Direction, Ingredient } from "@/types";
-import { ChangeEvent, KeyboardEvent, useState } from "react";
+import { ChangeEvent, KeyboardEvent, useRef, useState } from "react";
 import { AnimatePresence, motion as m } from "framer-motion";
 import Button from "./common/Button";
 import Input from "./common/Input";
@@ -29,7 +29,9 @@ const RecipeForm = () => {
   const [selectedCategories, setSelectedCategories] = useState<Category[]>([]);
 
   // image state
-  const [image, setImage] = useState<File>();
+  const [image, setImage] = useState<File | null>();
+  const [imagePreview, setImagePreview] = useState("");
+  const imageInputRef = useRef<any>(null);
 
   // misc states
   const [isCategoriesModalOpen, setIsCategoriesModalOpen] = useState(false);
@@ -83,21 +85,26 @@ const RecipeForm = () => {
 
   const createRecipe = async () => {
     setIsCreateRecipeLoading(true);
+    let imageUrl: string = "";
 
-    const imageUploadUrl = (await axios.get("/api/s3")).data as string;
-    axios.put(imageUploadUrl, image, {
-      headers: {
-        "Content-Type": "multipart/form-data",
-      },
-    });
+    if (image) {
+      const imageUploadUrl = (await axios.get("/api/s3")).data as string;
+      axios.put(imageUploadUrl, image, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      });
 
-    const imageUrl = imageUploadUrl.split("?")[0];
+      imageUrl = imageUploadUrl.split("?")[0];
+    }
 
     createRecipeMutation.mutate({ recipeData, imageUrl });
   };
 
   const selectImage = (e: ChangeEvent<HTMLInputElement>) => {
     const selectedFile = e.target.files as FileList;
+
+    setImagePreview(URL.createObjectURL(selectedFile?.[0]));
     setImage(selectedFile?.[0]);
   };
 
@@ -146,6 +153,12 @@ const RecipeForm = () => {
     setDirections(directions.filter((direction) => direction.id !== id));
   };
 
+  const clearImage = () => {
+    setImage(null);
+    setImagePreview("");
+    imageInputRef.current.value = "";
+  };
+
   return (
     <>
       <div className="flex flex-col gap-6 mt-10 md:flex-row md:gap-12">
@@ -166,13 +179,32 @@ const RecipeForm = () => {
           >
             Description
           </Input>
-          <Button
-            className="flex gap-2 items-center"
-            onClick={() => setIsCategoriesModalOpen(true)}
-          >
-            Categories
-          </Button>
-          <input type="file" accept="image/*" onChange={(e) => selectImage(e)} />
+          <div className="flex gap-2">
+            <Button
+              className="flex gap-2 items-center"
+              onClick={() => setIsCategoriesModalOpen(true)}
+            >
+              Categories
+            </Button>
+            <label className="px-4 py-2 flex items-center gap-2 border border-gray-200 hover:bg-gray-100 rounded-lg cursor-pointer">
+              Select image
+              <input
+                ref={imageInputRef}
+                className="hidden"
+                type="file"
+                accept="image/*"
+                onChange={(e) => selectImage(e)}
+              />
+            </label>
+            {imagePreview && (
+              <div onClick={() => clearImage()} className="relative cursor-pointer">
+                <img className="w-10 h-10 object-cover rounded-lg" src={imagePreview} />
+                <span className="absolute shadow-2xl -top-1 -right-1 bg-gray-100 rounded-sm">
+                  <XMarkIcon height={18} width={18} />
+                </span>
+              </div>
+            )}
+          </div>
           <Input
             inputValue={preparationTime}
             setInputValue={setPreparationTime}

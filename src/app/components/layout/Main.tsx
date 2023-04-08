@@ -6,12 +6,9 @@ interface MainProps extends React.HTMLAttributes<HTMLDivElement> {
 
 const Main = ({ children, className, ...props }: MainProps) => {
   return (
-    <div
-      className={`relative px-4 max-w-7xl mx-auto mt-36 ${className}`}
-      {...props}
-    >
+    <main className={`relative px-4 max-w-7xl mx-auto mt-32 md:mt-36 ${className}`} {...props}>
       {children}
-    </div>
+    </main>
   );
 };
 

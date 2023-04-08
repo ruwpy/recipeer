@@ -17,7 +17,7 @@ const Button = ({ disabled, children, buttonStyle, className, ...props }: Button
 
     case "accent":
       style =
-        "bg-blue-500 hover:bg-blue-600 text-white disabled:opacity-60 disabled:cursor-not-allowed";
+        "bg-blue-500 hover:bg-blue-600 text-white disabled:bg-[#89B4FA] disabled:cursor-not-allowed";
       break;
 
     default:

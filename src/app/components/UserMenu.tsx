@@ -39,7 +39,7 @@ const UserMenu = ({ session }: { session: Session }) => {
     <div className="relative">
       <div
         onClick={() => setIsMenuOpen((prev) => !prev)}
-        className="flex gap-2 items-center max-w-[200px] transition-colors overflow-hidden whitespace-nowrap text-ellipsis cursor-pointer hover:bg-gray-100 p-2 rounded-lg"
+        className="flex gap-2 items-center max-w-[200px] transition-colors overflow-hidden whitespace-nowrap text-ellipsis cursor-pointer bg-white hover:bg-gray-100 p-2 rounded-lg"
       >
         {session?.user?.image && (
           <Image

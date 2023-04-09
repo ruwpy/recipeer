@@ -15,13 +15,14 @@ const handler = async (req: NextApiRequest, res: NextApiResponse<Recipe | {}>) =
       where: { email: session.user?.email },
     });
 
-    console.log(recipeId);
-
     try {
       if (prismaUser && typeof recipeId === "string") {
         const recipe = await prisma.recipe.findFirstOrThrow({
           where: {
             id: recipeId,
+          },
+          include: {
+            author: true,
           },
         });
 

@@ -27,8 +27,8 @@ const handler = async (req: RecipeApiRequest, res: NextApiResponse<RecipeApiResp
     try {
       if (prismaUser) {
         const recipes = await prisma.recipe.findMany({
-          skip: (Number(page) - 1) * 8,
-          take: 8,
+          skip: (Number(page) - 1) * 6,
+          take: 6,
           where: {
             authorId: prismaUser.id,
           },

@@ -27,7 +27,7 @@ const Button = ({ disabled, children, buttonStyle, className, ...props }: Button
   return (
     <button
       disabled={disabled}
-      className={`w-fit h-10 px-4 transition-colors cursor rounded-lg ${style} ${className}`}
+      className={`w-fit min-h-[40px] px-4 transition-colors cursor rounded-lg ${style} ${className}`}
       {...props}
     >
       {children}

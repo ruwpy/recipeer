@@ -6,7 +6,6 @@ import { useState } from "react";
 import useRecipeStore from "@/stores/useRecipesStore";
 import { ArrowLeftIcon, ArrowRightIcon } from "@heroicons/react/24/solid";
 import Button from "./common/Button";
-import { Recipe } from "@/types";
 import { AnimatePresence, Variants, motion as m } from "framer-motion";
 import { RecipeApiResponse } from "@/pages/api/recipes";
 import SingleRecipe from "./SingleRecipe";
@@ -36,7 +35,7 @@ const Recipes = () => {
       onSuccess: (data: RecipeApiResponse) => {
         setIsQueryLoading(false);
         setRecipes(data.recipes);
-        setMaxPage(Math.ceil(data.recipesLength / 8));
+        setMaxPage(Math.ceil(data.recipesLength / 6));
       },
     }
   );
@@ -59,7 +58,7 @@ const Recipes = () => {
           <Loading />
         ) : (
           <m.div variants={appearVariants}>
-            <div className="flex items-start flex-wrap justify-between gap-6 mt-10 lg:h-[350px]">
+            <div className="flex items-start justify-center md:justify-start flex-wrap gap-4 mt-10 lg:h-[350px]">
               {isQueryLoading ? (
                 <Loading />
               ) : (
@@ -68,7 +67,7 @@ const Recipes = () => {
                 })
               )}
             </div>
-            <div className="flex gap-2 w-full justify-center mt-10 mb-10 items-center">
+            <div className="flex gap-2 w-full justify-center mt-10 mb-10 items-center fixed bottom-0 left-1/2 -translate-x-1/2 md:static md:translate-x-0 md:left-auto md:bottom-auto">
               <Button disabled={page === 1} buttonStyle="accent" onClick={() => pageDecrement()}>
                 <ArrowLeftIcon color="white" width={20} height={20} />
               </Button>

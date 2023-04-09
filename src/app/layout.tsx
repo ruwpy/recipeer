@@ -7,6 +7,7 @@ import AuthWrapper from "./components/auth/AuthWrapper";
 
 export const metadata = {
   title: "Recipeer",
+  icons: "/icon.svg",
   description: "Create recipes. Share them. Make awesome meals.",
 };
 

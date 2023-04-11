@@ -10,6 +10,7 @@ import { AnimatePresence, Variants, motion as m } from "framer-motion";
 import { RecipeApiResponse } from "@/pages/api/recipes";
 import SingleRecipe from "./SingleRecipe";
 import Loading from "./Loading";
+import Link from "next/link";
 
 export const appearVariants: Variants = {
   animate: {
@@ -50,6 +51,21 @@ const Recipes = () => {
     setRecipes([]);
     setPage((prev) => (page === 1 ? 1 : prev - 1));
   };
+
+  if (!isLoading && !recipes.length) {
+    return (
+      <div className="mt-8 text-center mx-auto">
+        <h2 className="text-4xl font-semibold">You have no recipes</h2>
+        <p className="text-lg mt-2">
+          click{" "}
+          <Link className="text-blue-400" href="/createrecipe">
+            here
+          </Link>{" "}
+          to create recipe
+        </p>
+      </div>
+    );
+  }
 
   return (
     <AnimatePresence mode="wait">

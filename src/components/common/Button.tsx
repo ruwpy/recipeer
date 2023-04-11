@@ -21,7 +21,8 @@ const Button = ({ disabled, children, buttonStyle, className, ...props }: Button
       break;
 
     default:
-      style = "border border-gray-200 hover:bg-gray-100";
+      style =
+        "border border-gray-200 hover:bg-gray-100 disabled:opacity-60 disabled:cursor-not-allowed";
       break;
   }
   return (

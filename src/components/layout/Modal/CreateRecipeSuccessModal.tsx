@@ -1,6 +1,5 @@
 import Modal, { ModalProps } from "./Modal";
 import Button from "../../common/Button";
-import { Recipe } from "@/types";
 import { useRouter } from "next/navigation";
 
 interface SuccessModalProps extends ModalProps {

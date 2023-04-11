@@ -1,4 +1,4 @@
-import React, { Dispatch, SetStateAction, useEffect, useState } from "react";
+import React, { Dispatch, SetStateAction, useState } from "react";
 import Modal, { ModalProps } from "./Modal";
 import Button from "../../common/Button";
 import { XMarkIcon, CheckIcon } from "@heroicons/react/24/solid";

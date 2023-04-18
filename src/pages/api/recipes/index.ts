@@ -1,8 +1,8 @@
 import { NextApiResponse, NextApiRequest } from "next";
-import { getServerSession } from "next-auth";
-import { authOptions } from "../auth/[...nextauth]";
 import { Recipe } from "@/types";
-import { prisma } from "../../../../prisma/client";
+import { db } from "@/lib/db";
+import { getServerSession } from "next-auth";
+import { authOptions } from "@/lib/auth";
 
 interface RecipeApiRequest extends NextApiRequest {
   body: { recipeData: Recipe; imageUrl: string };
@@ -15,50 +15,42 @@ export interface RecipeApiResponse {
 
 const handler = async (req: RecipeApiRequest, res: NextApiResponse<RecipeApiResponse | {}>) => {
   const { page } = req.query;
+  const session = await getServerSession(req, res, authOptions);
+
+  if (!session) {
+    return res.status(403).end();
+  }
+
+  const { user } = session;
 
   if (req.method === "GET") {
-    const session = await getServerSession(req, res, authOptions);
-    if (!session) return res.status(401).json({ message: "Unauthorized" });
-
-    const prismaUser = await prisma.user.findFirst({
-      where: { email: session.user?.email },
-    });
-
     try {
-      if (prismaUser) {
-        const recipes = await prisma.recipe.findMany({
-          skip: (Number(page) - 1) * 6,
-          take: 6,
-          where: {
-            authorId: prismaUser.id,
-          },
-          orderBy: {
-            createdAt: "desc",
-          },
-          include: {
-            author: true,
-          },
-        });
-        const allRecipes = await prisma.recipe.findMany({
-          where: {
-            authorId: prismaUser.id,
-          },
-        });
+      const recipes = await db.recipe.findMany({
+        skip: (Number(page) - 1) * 6,
+        take: 6,
+        where: {
+          authorId: user.id,
+        },
+        orderBy: {
+          createdAt: "desc",
+        },
+        include: {
+          author: true,
+        },
+      });
+      const allRecipes = await db.recipe.findMany({
+        where: {
+          authorId: user.id,
+        },
+      });
 
-        res.status(200).json({ recipes, recipesLength: allRecipes.length });
-      }
+      res.status(200).json({ recipes, recipesLength: allRecipes.length });
     } catch (error) {
       res.status(403).json({ error: "Error has occured whilst making a request" });
     }
   }
 
   if (req.method === "POST") {
-    const session = await getServerSession(req, res, authOptions);
-    if (!session) return res.status(401).json({ message: "Unauthorized" });
-
-    const prismaUser = await prisma.user.findFirst({
-      where: { email: session.user?.email },
-    });
     const {
       recipeData: {
         amountOfServings,
@@ -73,8 +65,6 @@ const handler = async (req: RecipeApiRequest, res: NextApiResponse<RecipeApiResp
       imageUrl,
     } = req.body;
 
-    console.log(imageUrl);
-
     const categoriesIdArray = categories
       ? categories.map((category) => {
           return {
@@ -84,33 +74,29 @@ const handler = async (req: RecipeApiRequest, res: NextApiResponse<RecipeApiResp
       : [];
 
     try {
-      if (prismaUser) {
-        const result = await prisma.recipe.create({
-          data: {
-            amountOfServings,
-            cookingTime,
-            description,
-            directions,
-            imageUrl,
-            ingredients,
-            preparationTime,
-            title,
-            author: {
-              connect: {
-                id: prismaUser.id,
-              },
-            },
-            categories: {
-              connect: [...categoriesIdArray],
+      const result = await db.recipe.create({
+        data: {
+          amountOfServings,
+          cookingTime,
+          description,
+          directions,
+          imageUrl,
+          ingredients,
+          preparationTime,
+          title,
+          author: {
+            connect: {
+              id: user.id,
             },
           },
-        });
+          categories: {
+            connect: [...categoriesIdArray],
+          },
+        },
+      });
 
-        res.status(200).json(result);
-      }
+      res.status(200).json(result);
     } catch (error) {
-      console.log(error);
-
       res.status(403).json({ error: "Error has occured whilst making a request" });
     }
   }

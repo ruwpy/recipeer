@@ -1,21 +1,25 @@
 "use client";
 
 import React, { useState } from "react";
-import { usePathname } from "next/navigation";
+import { redirect, usePathname } from "next/navigation";
 import { useQuery } from "@tanstack/react-query";
 import axios, { AxiosError } from "axios";
 import { Recipe } from "@/types";
 import Loading from "@/components/Loading";
 import { AnimatePresence, motion as m } from "framer-motion";
 import { appearVariants } from "@/components/Recipes";
-import Button from "@/components/common/Button";
+import Button from "@/components/ui/Button";
 import { QuestionMarkCircleIcon } from "@heroicons/react/24/solid";
+import { getCurrentUser } from "@/lib/session";
 
-const RecipePage = () => {
+const RecipePage = async () => {
   const recipeId = usePathname()!.split("/")[2];
   const [recipe, setRecipe] = useState<Recipe>();
   const [isRecipeLoading, setIsRecipeLoading] = useState(true);
   const [isNotFound, setIsNotFound] = useState(false);
+  const user = await getCurrentUser();
+
+  if (!user) redirect("/login");
 
   useQuery(
     ["singlerecipe"],
